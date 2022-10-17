@@ -8,8 +8,20 @@ return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
 
   -- Lsp manager
-  use 'williamboman/mason.nvim'
-  require('mason').setup()
+  use {
+    'williamboman/mason.nvim',
+    config = function()
+      require('mason').setup()
+    end
+  }
+  use {
+    'williamboman/mason-lspconfig',
+    config = function()
+      require('mason-lspconfig').setup({
+        ensure_installed = { 'svelte-language-server' }
+      })
+    end
+  }
 
   -- for vim-svelte
   use {
@@ -102,25 +114,51 @@ return require('packer').startup(function(use)
 
   -- trouble code diagonostic
   use {
-  "folke/trouble.nvim",
-  requires = "kyazdani42/nvim-web-devicons",
-  config = function()
-    require("trouble").setup {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-    }
-  end
-  }
-
-  -- dashboard: greeting /welcome page
-  use {'glepnir/dashboard-nvim',
+    "folke/trouble.nvim",
+    requires = "kyazdani42/nvim-web-devicons",
     config = function()
-      require('plugins.configs.dashboardasdf')
+      require("trouble").setup {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      }
     end
   }
 
   -- lspconfig
   use 'neovim/nvim-lspconfig'
+  require'lspconfig'.svelte.setup{}
+  require'lspconfig'.pyright.setup{}
+  require'lspconfig'.sumneko_lua.setup {
+    settings = {
+      Lua = {
+        runtime = {
+          -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+          version = 'LuaJIT',
+        },
+        diagnostics = {
+          -- Get the language server to recognize the `vim` global
+          globals = {'vim'},
+        },
+        workspace = {
+          -- Make the server aware of Neovim runtime files
+          library = vim.api.nvim_get_runtime_file("", true),
+        },
+        -- Do not send telemetry data containing a randomized but unique identifier
+        telemetry = {
+          enable = false,
+        },
+      },
+    },
+  }
+
+  -- startup/welcome/dashboard page
+  use {
+    'goolord/alpha-nvim',
+    config = function ()
+        require'alpha'.setup(require'alpha.themes.dashboard'.config)
+    end
+  }
+
 
 end)
