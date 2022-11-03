@@ -14,6 +14,7 @@ opt.softtabstop = 2
 opt.clipboard = 'unnamedplus' -- bind yank to system clipboard
 opt.relativenumber = true
 opt.shell = 'powershell.exe' -- set default shell from cmd to powershell
+opt.shellcmdflag = '-c'
 
 -- Netrw
 g.netrw_liststyle = 3 -- tree view
